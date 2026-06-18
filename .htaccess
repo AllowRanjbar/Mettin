@@ -1,0 +1,23 @@
+# Backend API htaccess for shared hosting with Node.js via Apache proxy
+# This file goes in the backend subdomain folder on cPanel
+
+<IfModule mod_proxy.c>
+  # Proxy requests to Node.js backend running on port 5000
+  ProxyRequests Off
+  ProxyPreserveHost On
+  
+  # Serve static files directly
+  ProxyPass /uploads !
+  ProxyPass / http://localhost:5000/
+  ProxyPassReverse / http://localhost:5000/
+</IfModule>
+
+<IfModule !mod_proxy.c>
+  # Fallback: serve static content directly
+  DirectoryIndex disabled
+</IfModule>
+
+# Security
+<FilesMatch "\.(env|json|md)$">
+  Require all denied
+</FilesMatch>
