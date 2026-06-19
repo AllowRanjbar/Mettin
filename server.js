@@ -18,12 +18,20 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    const allowed = [
-      process.env.FRONTEND_URL,
-      'https://tasfieafra.ir',
-      'https://www.tasfieafra.ir',
-    ].filter(Boolean);
-    callback(null, allowed.includes(origin));
+    try {
+      const hostname = new URL(origin).hostname;
+      const allowed = [
+        'localhost',
+        'tasfieafra.ir',
+        'www.tasfieafra.ir',
+      ];
+      if (process.env.FRONTEND_URL) {
+        allowed.push(new URL(process.env.FRONTEND_URL).hostname);
+      }
+      callback(null, allowed.includes(hostname));
+    } catch {
+      callback(null, false);
+    }
   },
   credentials: true
 }));
