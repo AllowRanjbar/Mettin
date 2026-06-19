@@ -16,7 +16,15 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const allowed = [
+      process.env.FRONTEND_URL,
+      'https://tasfieafra.ir',
+      'https://www.tasfieafra.ir',
+    ].filter(Boolean);
+    callback(null, allowed.includes(origin));
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
